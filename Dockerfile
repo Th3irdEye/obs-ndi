@@ -32,6 +32,13 @@ RUN echo headless | sudo -S -k apt-get update \
 # Download and install the plugins for NDI
 	&& echo headless | sudo -S -k dpkg -i /tmp/*.deb \
 	&& echo headless | sudo -S -k rm -rf /tmp/*.deb \
-	&& echo headless | sudo -S -k rm -rf /var/lib/apt/lists/* \
-	
+    	&& echo headless | sudo -S -k rm -rf /var/lib/apt/lists/*
+
+# Fix ownership so that the headless user can create directories under /home/headless
+USER root
+RUN chown -R headless:headless /home/headless
+
+# Optionally, switch to the headless user if the image is expected to run as that user
+USER headless
+
 VOLUME ["/config"]
